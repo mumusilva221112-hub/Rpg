@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurils — Tesouro da Campanha</title>
+  <meta name="description" content="Sistema de moedas Aurils para campanhas de RPG: tesouro da equipe, transações, mercado e conversor.">
+  <meta name="theme-color" content="#16120d">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-coin" aria-hidden="true">A</span>
+    <div class="brand-text">
+      <h1>Aurils</h1>
+      <p>Moedas &amp; tesouro da sua campanha</p>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="Seções">
+    <button type="button" class="tab-btn active" data-tab="tesouro">🏆 Tesouro</button>
+    <button type="button" class="tab-btn" data-tab="transacoes">📜 Transações</button>
+    <button type="button" class="tab-btn" data-tab="mercado">⚖️ Mercado</button>
+    <button type="button" class="tab-btn" data-tab="conversor">🔁 Conversor</button>
+    <button type="button" class="tab-btn" data-tab="sistema">⚙️ Sistema</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== TESOURO ===================== -->
+  <section id="tab-tesouro" class="tab active">
+    <div class="panel">
+      <h2>Recrutar aventureiro</h2>
+      <form id="form-player" class="inline-form">
+        <input id="p-name" type="text" placeholder="Nome do personagem" maxlength="40" required>
+        <input id="p-start" type="number" min="0" step="0.01" placeholder="Tesouro inicial (A)" value="10">
+        <button type="submit" class="btn gold">⚔️ Recrutar</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Equipe &amp; tesouro</h2>
+        <span class="muted" id="group-total"></span>
+      </div>
+      <div id="party-grid" class="party-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== TRANSAÇÕES ===================== -->
+  <section id="tab-transacoes" class="tab">
+    <div class="panel">
+      <h2>Registrar transação</h2>
+      <form id="form-tx" class="tx-form">
+        <select id="tx-player" aria-label="Aventureiro"></select>
+        <div class="seg-group" role="radiogroup" aria-label="Tipo de transação">
+          <label class="seg"><input type="radio" name="tx-type" value="in" checked><span>💰 Ganho</span></label>
+          <label class="seg"><input type="radio" name="tx-type" value="out"><span>💸 Gasto</span></label>
+        </div>
+        <select id="tx-denom" aria-label="Moeda"></select>
+        <input id="tx-qty" type="number" min="1" step="1" value="1" aria-label="Quantidade de moedas">
+        <input id="tx-note" type="text" placeholder="Descrição (opcional)" maxlength="80">
+        <button type="submit" class="btn gold">Registrar</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Histórico</h2>
+      <ul id="log-list" class="log-list"></ul>
+    </div>
+  </section>
+
+  <!-- ===================== MERCADO ===================== -->
+  <section id="tab-mercado" class="tab">
+    <div class="panel">
+      <h2>Mercado</h2>
+      <div class="market-head">
+        <select id="mkt-player" aria-label="Comprador / vendedor"></select>
+        <span class="muted" id="mkt-summary"></span>
+      </div>
+      <p class="muted small">Venda paga 50% do preço. Itens são ilimitados (sem estoque).</p>
+      <ul id="market-items" class="market-list"></ul>
+      <details class="add-item">
+        <summary>＋ Adicionar item ao mercado</summary>
+        <form id="form-item" class="inline-form">
+          <input id="i-icon" type="text" placeholder="Emoji (ex.: 🧪)" maxlength="4">
+          <input id="i-name" type="text" placeholder="Nome do item" maxlength="50" required>
+          <input id="i-price" type="number" min="0.01" step="0.01" placeholder="Preço (A)" required>
+          <button type="submit" class="btn gold">Adicionar</button>
+        </form>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===================== CONVERSOR ===================== -->
+  <section id="tab-conversor" class="tab">
+    <div class="panel converter">
+      <h2>Conversor de moedas</h2>
+      <div class="cv-input">
+        <input id="cv-value" type="text" inputmode="decimal" value="1" aria-label="Valor">
+        <select id="cv-denom" aria-label="Moeda"></select>
+      </div>
+      <div id="cv-result" class="cv-result"></div>
+    </div>
+  </section>
+
+  <!-- ===================== SISTEMA ===================== -->
+  <section id="tab-sistema" class="tab">
+    <div class="panel">
+      <h2>O sistema de moedas Aurils</h2>
+      <table class="rules-table">
+        <thead>
+          <tr><th>Moeda</th><th>Equivalência</th><th>Em aurils</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="coin coin-platina" data-sym="Pl"></span> Platina</td><td>1 platina = 10 aurils</td><td>10 A</td></tr>
+          <tr class="hl"><td><span class="coin coin-auril" data-sym="A"></span> <strong>Auril</strong></td><td>1 auril = 10 pratas</td><td>1 A</td></tr>
+          <tr><td><span class="coin coin-prata" data-sym="pt"></span> Prata</td><td>1 prata = 10 copos</td><td>0,10 A</td></tr>
+          <tr><td><span class="coin coin-copo" data-sym="cp"></span> Copo</td><td>moeda menor</td><td>0,01 A</td></tr>
+        </tbody>
+      </table>
+      <p class="lore"><em>O Auril, cunhado nas forjas da Casa Auriana, é a moeda de referência do reino: dez pratas por auril, dez aurils por platina. Uma noite em estalagem custa 1 A; uma lâmina boa, 8 A; um cavalo de guerra, 150 A.</em></p>
+    </div>
+
+    <div class="panel">
+      <h2>Backup da campanha</h2>
+      <p class="muted small">Os dados ficam salvos no seu navegador (localStorage). Exporte para levar a outro dispositivo ou fazer cópia de segurança.</p>
+      <div class="sys-actions">
+        <button type="button" id="btn-export" class="btn">⬇️ Exportar (JSON)</button>
+        <label class="btn file-btn">⬆️ Importar (JSON)
+          <input id="import-file" type="file" accept="application/json,.json" hidden>
+        </label>
+        <button type="button" id="btn-reset" class="btn danger">🔥 Recomeçar campanha</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Aurils — moedas para campanhas de RPG · dados salvos localmente no navegador</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="js/currency.js"></script>
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
